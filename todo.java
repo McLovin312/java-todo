@@ -52,6 +52,21 @@ class Todo{
                 
 
             }
+
+            else if (num == 4){
+                System.out.println("Select a task to delete: ");
+                for (int i = 0; i < todo.size(); i++){
+                    System.out.println(i + 1 + " " + todo.get(i));
+                }
+                int deleteTask = scnr.nextInt();
+                System.out.println("Deleted task: " + deleteTask);
+                System.out.println();
+                deleteTask -= 1;
+                todo.remove(deleteTask);
+            }
+            else{
+                break;
+            }
         }
 
 
