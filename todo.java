@@ -3,7 +3,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
+import java.util.PriorityQueue;
 
 class Todo{
     public static void main(String args[]){
@@ -11,9 +11,8 @@ class Todo{
 
         Scanner scnr = new Scanner(System.in);
 
-        
         while(true){
-            System.out.println("---To Do List----");
+            System.out.println("---- To Do List ----");
             System.out.println("1. Create Task");
             System.out.println("2. View Tasks");
             System.out.println("3. Complete Task");
@@ -51,11 +50,20 @@ class Todo{
                         System.out.println("Invalid format. Please try again (Format: HH:mm:ss)");
                     }
                 }
+
                 scnr.nextLine();
+
+                System.out.print("What priority? (1 - 5): ");
+                int priorityLevel = scnr.nextInt();
+                scnr.nextLine();
+
                 System.out.print("What task would you like to add?: ");
-                Task myTask = new Task(scnr.nextLine());
+                String taskDesc = scnr.nextLine();
+                Task myTask = new Task(taskDesc, priorityLevel);
+
                 myTask.selectedDate = selectedDate;
                 myTask.selectedTime = selectedTime;
+
                 todo.add(myTask);
                 
                 System.out.println("Task added! Due on " + selectedDate + " at " + selectedTime);
@@ -67,7 +75,8 @@ class Todo{
                 System.out.println("---Tasks---");
                 System.out.println("Total Tasks: " + todo.size());
 
-                todo.sort(Comparator.comparing(Task::getSelectedDate).thenComparing(Task::getSelectedTime));
+                todo.sort(Comparator.comparing(Task::getPriority).thenComparing(Task::getSelectedDate).thenComparing(Task::getSelectedTime));
+
 
                 for (int i = 0; i < todo.size(); i++){
                     System.out.println(todo.get(i).toString());
@@ -86,7 +95,6 @@ class Todo{
                 selectedTask -= 1;
                 todo.get(selectedTask).markComplete();
                 
-
             }
 
             else if (num == 4){
@@ -113,10 +121,12 @@ class Todo{
     private boolean isCompleted;
     LocalDate selectedDate;
     LocalTime selectedTime;
+    private int priority;
 
-    public Task(String description) {
+    public Task(String description, int priority) {
         this.description = description;
         this.isCompleted = false;
+        this.priority = priority;
     }
 
     public void markComplete() {
@@ -131,6 +141,10 @@ class Todo{
         return isCompleted;
     }
 
+    public int getPriority(){
+        return priority;
+    }
+
     public LocalDate getSelectedDate(){
         return selectedDate;
     }
@@ -141,7 +155,7 @@ class Todo{
 
     @Override
     public String toString() {
-        return (isCompleted ? "[X] " : "[ ] ") + description + " on " + selectedDate + " at " + selectedTime;
+        return (isCompleted ? "[X] " : "[ ] ") + "[Priority " + priority + "] " + description + " on " + selectedDate + " at " + selectedTime;
     }
 }
 
