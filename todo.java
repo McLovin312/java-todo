@@ -12,15 +12,19 @@ class Todo{
         Scanner scnr = new Scanner(System.in);
 
         while(true){
-            System.out.println("---- To Do List ----");
-            System.out.println("1. Create Task");
-            System.out.println("2. View Tasks");
-            System.out.println("3. Complete Task");
-            System.out.println("4. Delete Task");
-            System.out.println("5. Exit");
+            System.out.println("\n\033[36m+----------------------------+\033[0m");
+            System.out.println("\033[36m|\033[0m         \033[1mTO-DO LIST\033[0m         \033[36m|\033[0m");
+            System.out.println("\033[36m+----------------------------+\033[0m");
+            System.out.println("\033[36m|\033[0m  \033[33m1.\033[0m Create Task            \033[36m|\033[0m");
+            System.out.println("\033[36m|\033[0m  \033[33m2.\033[0m View Tasks             \033[36m|\033[0m");
+            System.out.println("\033[36m|\033[0m  \033[33m3.\033[0m Complete Task          \033[36m|\033[0m");
+            System.out.println("\033[36m|\033[0m  \033[33m4.\033[0m Delete Task            \033[36m|\033[0m");
+            System.out.println("\033[36m|\033[0m  \033[31m5.\033[0m Exit                   \033[36m|\033[0m");
+            System.out.println("\033[36m+----------------------------+\033[0m");
 
-            System.out.println("Select an option: ");
+            System.out.print("\033[1mSelect an option:\033[0m \033[32m");
             int num = scnr.nextInt();
+            System.out.print("\033[0m"); // Reset color after input
 
             if (num == 1){
                 scnr.nextLine();
@@ -28,36 +32,40 @@ class Todo{
                 DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
                 LocalDate selectedDate = null; 
                 LocalTime selectedTime = null; 
-                System.out.print("When will this task be due? (Format: YYYY-MM-DD): ");
+                
+                System.out.print("\n\033[33m> When will this task be due? (Format: YYYY-MM-DD):\033[0m ");
                 while(selectedDate == null){
                     String input = scnr.nextLine();
                     try{
                         selectedDate = LocalDate.parse(input, dateFormatter);
-                        System.out.println("Selected date: " + selectedDate);
+                        System.out.println("\033[32m  * Selected date: " + selectedDate + "\033[0m");
                     }
                     catch (DateTimeParseException e){
-                        System.out.println("Invalid format. Please try again (Format: YYYY-MM-DD)");
+                        System.out.println("\033[31m  X Invalid format. Please try again (Format: YYYY-MM-DD)\033[0m");
+                        System.out.print("\033[33m> Try again:\033[0m "); 
                     }
                 }
-                System.out.print("What time? (Format: HH:mm:ss): ");
+                
+                System.out.print("\033[33m> What time? (Format: HH:mm:ss):\033[0m ");
                 while(selectedTime == null){
                     String timeInput = scnr.nextLine();
                     try{
                         selectedTime = LocalTime.parse(timeInput, timeFormatter);
-                        System.out.println("Selected time: " + selectedTime);
+                        System.out.println("\033[32m  * Selected time: " + selectedTime + "\033[0m");
                     }
                     catch (DateTimeParseException e){
-                        System.out.println("Invalid format. Please try again (Format: HH:mm:ss)");
+                        System.out.println("\033[31m  X Invalid format. Please try again (Format: HH:mm:ss)\033[0m");
+                        System.out.print("\033[33m> Try again:\033[0m ");
                     }
                 }
 
-                scnr.nextLine();
+                scnr.nextLine(); 
 
-                System.out.print("What priority? (1 - 5): ");
+                System.out.print("\033[33m> What priority? (1 - 5):\033[0m ");
                 int priorityLevel = scnr.nextInt();
                 scnr.nextLine();
 
-                System.out.print("What task would you like to add?: ");
+                System.out.print("\033[33m> What task would you like to add?:\033[0m ");
                 String taskDesc = scnr.nextLine();
                 Task myTask = new Task(taskDesc, priorityLevel);
 
@@ -66,54 +74,58 @@ class Todo{
 
                 todo.add(myTask);
                 
-                System.out.println("Task added! Due on " + selectedDate + " at " + selectedTime);
-                System.out.println();
+                System.out.println("\n\033[1;32mTask added!\033[0m \033[90mDue on " + selectedDate + " at " + selectedTime + "\033[0m\n");
             }
 
             else if (num == 2) {
-                System.out.println();
-                System.out.println("---Tasks---");
-                System.out.println("Total Tasks: " + todo.size());
+                System.out.println("\n\033[1;36m--- Tasks ---\033[0m");
+                System.out.println("\033[90mTotal Tasks: " + todo.size() + "\033[0m\n");
 
                 todo.sort(Comparator.comparing(Task::getPriority).thenComparing(Task::getSelectedDate).thenComparing(Task::getSelectedTime));
 
-
                 for (int i = 0; i < todo.size(); i++){
-                    System.out.println(todo.get(i).toString());
-
-                System.out.println();
-
+                    System.out.println("  " + todo.get(i).toString());
+                    System.out.println();
                 }
             }
 
             else if (num == 3){
-                System.out.println("Which task would you like to complete? (Input number): ");
+                System.out.println("\n\033[1;36m--- Complete a Task ---\033[0m");
+                System.out.println("\033[33mWhich task would you like to complete? (Input number):\033[0m ");
+                
                 for (int i = 0; i < todo.size(); i++){
-                    System.out.println(i + 1 + " " + todo.get(i).toString());
+                    System.out.println("  \033[1;36m" + (i + 1) + ".\033[0m " + todo.get(i).toString());
                 }
+                
+                System.out.print("\033[33m> \033[0m");
                 int selectedTask = scnr.nextInt();
                 selectedTask -= 1;
                 todo.get(selectedTask).markComplete();
                 
+                System.out.println("\n\033[1;32m* Task marked as complete!\033[0m\n"); 
             }
 
             else if (num == 4){
-                System.out.println("Select a task to delete: ");
+                System.out.println("\n\033[1;31m--- Delete a Task ---\033[0m");
+                System.out.println("\033[33mSelect a task to delete:\033[0m ");
+                
                 for (int i = 0; i < todo.size(); i++){
-                    System.out.println(i + 1 + " " + todo.get(i));
+                    System.out.println("  \033[1;31m" + (i + 1) + ".\033[0m " + todo.get(i).toString());
                 }
+                
+                System.out.print("\033[33m> \033[0m");
                 int deleteTask = scnr.nextInt();
-                System.out.println("Deleted task: " + deleteTask);
-                System.out.println();
+                
+                System.out.println("\n\033[1;32m* Deleted task: " + deleteTask + "\033[0m\n");
+                
                 deleteTask -= 1;
                 todo.remove(deleteTask);
             }
             else{
+                System.out.println("\n\033[1;32mGoodbye!\033[0m\n");
                 break;
             }
         }
-
-
     }
 
     static class Task {
@@ -155,8 +167,10 @@ class Todo{
 
     @Override
     public String toString() {
-        return (isCompleted ? "[X] " : "[ ] ") + "[Priority " + priority + "] " + description + " on " + selectedDate + " at " + selectedTime;
+        return (isCompleted ? "\033[1;32m[X]\033[0m " : "\033[1;31m[ ]\033[0m ") 
+             + "\033[1;35m[Priority " + priority + "]\033[0m " 
+             + "\033[1m" + description + "\033[0m " 
+             + "\033[90mon " + selectedDate + " at " + selectedTime + "\033[0m";
     }
 }
-
 }
