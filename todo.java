@@ -4,6 +4,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.PriorityQueue;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 class Todo{
     public static void main(String args[]){
@@ -19,12 +22,13 @@ class Todo{
             System.out.println("\033[36m|\033[0m  \033[33m2.\033[0m View Tasks             \033[36m|\033[0m");
             System.out.println("\033[36m|\033[0m  \033[33m3.\033[0m Complete Task          \033[36m|\033[0m");
             System.out.println("\033[36m|\033[0m  \033[33m4.\033[0m Delete Task            \033[36m|\033[0m");
-            System.out.println("\033[36m|\033[0m  \033[31m5.\033[0m Exit                   \033[36m|\033[0m");
+            System.out.println("\033[36m|\033[0m  \033[33m5.\033[0m Save Tasks             \033[36m|\033[0m");
+            System.out.println("\033[36m|\033[0m  \033[31m6.\033[0m Exit                   \033[36m|\033[0m");
             System.out.println("\033[36m+----------------------------+\033[0m");
 
             System.out.print("\033[1mSelect an option:\033[0m \033[32m");
             int num = scnr.nextInt();
-            System.out.print("\033[0m"); // Reset color after input
+            System.out.print("\033[0m");
 
             if (num == 1){
                 scnr.nextLine();
@@ -121,6 +125,29 @@ class Todo{
                 deleteTask -= 1;
                 todo.remove(deleteTask);
             }
+
+            else if (num == 5){
+                System.out.println("\n\033[1;36m--- Saving Tasks ---\033[0m");
+
+                java.nio.file.Path path = Paths.get("C:\\todo\\todo.csv");
+
+                try(java.io.BufferedWriter writer = Files.newBufferedWriter(path)) {
+                    
+                    for (Task task : todo) {
+                        String fileLine = task.toString();
+
+                        writer.write(fileLine);
+                        writer.newLine();
+
+                    System.out.println("\033[1;32m* Tasks successfully saved!\033[0m\n");
+
+                }
+                } 
+                catch(IOException e) {
+                    System.out.println("\033[1;31m  X Error saving file: " + e.getMessage() + "\033[0m\n");
+                }
+            }
+
             else{
                 System.out.println("\n\033[1;32mGoodbye!\033[0m\n");
                 break;
