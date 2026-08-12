@@ -3,6 +3,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
 
 class Todo{
     public static void main(String args[]){
@@ -61,10 +62,13 @@ class Todo{
                 System.out.println();
             }
 
-            else if (num ==2) {
+            else if (num == 2) {
                 System.out.println();
                 System.out.println("---Tasks---");
                 System.out.println("Total Tasks: " + todo.size());
+
+                todo.sort(Comparator.comparing(Task::getSelectedDate).thenComparing(Task::getSelectedTime));
+
                 for (int i = 0; i < todo.size(); i++){
                     System.out.println(todo.get(i).toString());
 
@@ -107,8 +111,8 @@ class Todo{
     static class Task {
     private String description;
     private boolean isCompleted;
-    private LocalDate selectedDate;
-    private LocalTime selectedTime;
+    LocalDate selectedDate;
+    LocalTime selectedTime;
 
     public Task(String description) {
         this.description = description;
@@ -125,6 +129,14 @@ class Todo{
 
     public boolean isCompleted() {
         return isCompleted;
+    }
+
+    public LocalDate getSelectedDate(){
+        return selectedDate;
+    }
+
+    public LocalTime getSelectedTime(){
+        return selectedTime;
     }
 
     @Override
