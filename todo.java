@@ -1,10 +1,15 @@
 import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 class Todo{
     public static void main(String args[]){
         List<Task> todo = new ArrayList<>();
 
         Scanner scnr = new Scanner(System.in);
+
         
         while(true){
             System.out.println("---To Do List----");
@@ -14,18 +19,45 @@ class Todo{
             System.out.println("4. Delete Task");
             System.out.println("5. Exit");
 
-        
             System.out.println("Select an option: ");
             int num = scnr.nextInt();
 
             if (num == 1){
                 scnr.nextLine();
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+                LocalDate selectedDate = null; 
+                LocalTime selectedTime = null; 
+                System.out.print("When will this task be due? (Format: YYYY-MM-DD): ");
+                while(selectedDate == null){
+                    String input = scnr.nextLine();
+                    try{
+                        selectedDate = LocalDate.parse(input, dateFormatter);
+                        System.out.println("Selected date: " + selectedDate);
+                    }
+                    catch (DateTimeParseException e){
+                        System.out.println("Invalid format. Please try again (Format: YYYY-MM-DD)");
+                    }
+                }
+                System.out.print("What time? (Format: HH:mm:ss): ");
+                while(selectedTime == null){
+                    String timeInput = scnr.nextLine();
+                    try{
+                        selectedTime = LocalTime.parse(timeInput, timeFormatter);
+                        System.out.println("Selected time: " + selectedTime);
+                    }
+                    catch (DateTimeParseException e){
+                        System.out.println("Invalid format. Please try again (Format: HH:mm:ss)");
+                    }
+                }
+                scnr.nextLine();
                 System.out.print("What task would you like to add?: ");
                 Task myTask = new Task(scnr.nextLine());
-
+                myTask.selectedDate = selectedDate;
+                myTask.selectedTime = selectedTime;
                 todo.add(myTask);
                 
-                System.out.println("Task added!");
+                System.out.println("Task added! Due on " + selectedDate + " at " + selectedTime);
                 System.out.println();
             }
 
@@ -75,6 +107,8 @@ class Todo{
     static class Task {
     private String description;
     private boolean isCompleted;
+    private LocalDate selectedDate;
+    private LocalTime selectedTime;
 
     public Task(String description) {
         this.description = description;
@@ -95,7 +129,7 @@ class Todo{
 
     @Override
     public String toString() {
-        return (isCompleted ? "[X] " : "[ ] ") + description;
+        return (isCompleted ? "[X] " : "[ ] ") + description + " on " + selectedDate + " at " + selectedTime;
     }
 }
 
