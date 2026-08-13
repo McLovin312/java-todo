@@ -129,12 +129,12 @@ class Todo{
             else if (num == 5){
                 System.out.println("\n\033[1;36m--- Saving Tasks ---\033[0m");
 
-                java.nio.file.Path path = Paths.get("C:\\todo\\todo.csv");
+                java.nio.file.Path path = Paths.get("todo.csv");
 
                 try(java.io.BufferedWriter writer = Files.newBufferedWriter(path)) {
                     
                     for (Task task : todo) {
-                        String fileLine = task.toString();
+                        String fileLine = task.formatter();
 
                         writer.write(fileLine);
                         writer.newLine();
@@ -190,6 +190,27 @@ class Todo{
 
     public LocalTime getSelectedTime(){
         return selectedTime;
+    }
+
+    public String formatter(){
+        return String.format("%b,%s,%s,%s,%s", 
+                isCompleted, 
+                priority, 
+                escapeForCsv(description), 
+                selectedDate, 
+                selectedTime);
+    }
+    private String escapeForCsv(String value) {
+        if (value == null) {
+            return "";
+        }
+        
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            String escapedQuotes = value.replace("\"", "\"\"");
+            return "\"" + escapedQuotes + "\"";
+        }
+        
+        return value;
     }
 
     @Override
